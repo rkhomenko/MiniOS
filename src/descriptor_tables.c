@@ -1,10 +1,3 @@
-//
-// descriptor_tables.c - Initialises the GDT and IDT, and defines the 
-//                       default ISR and IRQ handler.
-//                       Based on code from Bran's kernel development tutorials.
-//                       Rewritten for JamesM's kernel development tutorials.
-//
-
 #include "common.h"
 #include "descriptor_tables.h"
 #include "isr.h"
@@ -37,7 +30,7 @@ void init_descriptor_tables()
     // Initialise the interrupt descriptor table.
     init_idt();
     // Nullify all the interrupt handlers.
-    memset(&interrupt_handlers, 0, sizeof(isr_t)*256);
+    memset((u8int *)&interrupt_handlers, 0, sizeof(isr_t)*256);
 }
 
 static void init_gdt()
@@ -73,7 +66,7 @@ static void init_idt()
     idt_ptr.limit = sizeof(idt_entry_t) * 256 -1;
     idt_ptr.base  = (u32int)&idt_entries;
 
-    memset(&idt_entries, 0, sizeof(idt_entry_t)*256);
+    memset((u8int *)&idt_entries, 0, sizeof(idt_entry_t)*256);
 
     // Remap the irq table.
     outb(0x20, 0x11);

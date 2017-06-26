@@ -1,12 +1,10 @@
-// main.c -- Определяет точку входа Cи-кода ядра
-
 #include "monitor.h"
 #include "multiboot.h"
 #include "descriptor_tables.h"
 #include "timer.h"
 
 
-int main(struct multiboot *mboot_ptr)
+int kernel_main(struct multiboot *mboot_ptr)
 {
     // Initialise all the ISRs and segmentation
     init_descriptor_tables();

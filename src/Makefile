@@ -1,24 +1,28 @@
-# Makefile for JamesM's kernel tutorials.
-# The C and C++ rules are already setup by default.
-# The only one that needs changing is the assembler 
-# rule, as we use nasm instead of GNU as.
+BUILD_DIR=.
+SOURCES_C=common.c descriptor_tables.c isr.c main.c monitor.c timer.c
+SOURCES_ASM=boot.s gdt.s interrupt.s
+OBJS=$(SOURCES_C:.c=.o) $(SOURCES_ASM:.s=.o)
+OBJFILES=$(addprefix $(BUILD_DIR)/, $(OBJS))
 
-OBJFILES=boot.o main.o monitor.o common.o descriptor_tables.o isr.o interrupt.o gdt.o timer.o
+CFLAGS= -c -Wall -Wextra -pedantic-errors -fno-builtin -fno-stack-protector -nostdinc -nostdlib -ggdb3 -m32
+ASFLAGS= -felf
+LDFLAGS= -Tlink.ld -melf_i386
 
-CFLAGS  = -Wall -fno-builtin -fno-stack-protector -nostdinc -nostdlib -ggdb3 -m32
-ASFLAGS=-felf
-LDFLAGS=-Tlink.ld -melf_i386
+BINARY=$(BUILD_DIR)/MiniOS.bin
+BINARY_DBG=$(BUILD_DIR)/MiniOS.bin.dbg
 
-all: $(OBJFILES) link
+all: $(OBJS) link
+
+.c.o:
+	$(CC) $(CFLAGS) $< -o $(BUILD_DIR)/$@
 
 clean:
-	rm -f *~ *.o MiniOS.bin MiniOS.bin.dbg
+	@rm -f $(BUILD_DIR)/*.o $(BINARY) $(BINARY_DBG)
 
 link:
-	ld $(LDFLAGS) -o MiniOS.bin $(OBJFILES)
-	cp MiniOS.bin MiniOS.bin.dbg 
-	strip MiniOS.bin
+	@ld $(LDFLAGS) -o $(BINARY) $(OBJFILES)
+	@cp $(BINARY) $(BINARY_DBG) 
+	@strip $(BINARY)
 
-#подцель компиляции файлов на ассемблере
 .s.o:
-	nasm $(ASFLAGS) $<
+	@nasm $(ASFLAGS) $< -o $(BUILD_DIR)/$@
