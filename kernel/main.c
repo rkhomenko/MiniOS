@@ -3,7 +3,6 @@
 #include "descriptor_tables.h"
 #include "timer.h"
 
-
 int kernel_main(struct multiboot *mboot_ptr)
 {
     // Initialise all the ISRs and segmentation

@@ -14,7 +14,7 @@ function create_or_update_image {
     IMAGE="$1"
     ELF="$2"
     GRUB_CFG=./grub/grub.cfg
-    GRUB_IMG=./grub/background.png
+    GRUB_IMG=./grub/background.jpg
     CREATE_IMAGE=false
 
     if ! [[ -f "$IMAGE" ]]; then
