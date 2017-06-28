@@ -13,11 +13,11 @@ int kernel_main(struct multiboot *mboot_ptr)
     // Write out a sample string
     monitor_write("Hello, world!\n");
 
-    asm volatile("int $0x3");
+    /*asm volatile("int $0x3");
     asm volatile("int $0x4");
 
     asm volatile("sti");
-    init_timer(10);
+    init_timer(10);*/
 
     return 0;
 }
