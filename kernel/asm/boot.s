@@ -31,7 +31,7 @@ mboot:
                                 ; 4-byte boundary in your kernel file
     dd  MBOOT_HEADER_FLAGS      ; How GRUB should load your file / settings
     dd  MBOOT_CHECKSUM          ; To ensure that the above values are correct
-    
+
     dd  mboot                   ; Location of this descriptor
     dd  code                    ; Start of kernel '.text' (code) section.
     dd  bss                     ; End of kernel '.data' section.
@@ -40,7 +40,6 @@ mboot:
 
 [GLOBAL start]                  ; Точка входа ядра (делаем видимым для линковщика)
 [EXTERN kernel_main]            ; Точка входа нашего Си кода
-[EXTERN halt]
 
 
 ;Grub через регистры %ebx и %eax передает указатель

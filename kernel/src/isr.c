@@ -1,6 +1,6 @@
-#include "common.h"
-#include "isr.h"
-#include "monitor.h"
+#include <common.h>
+#include <isr.h>
+#include <monitor.h>
 
 isr_t interrupt_handlers[256];
 
@@ -20,6 +20,11 @@ void isr_handler(registers_t regs)
     {
         isr_t handler = interrupt_handlers[regs.int_no];
         handler(regs);
+    }
+    else {
+        monitor_write("unhandled interrupt: ");
+        monitor_write_hex(regs.int_no);
+        monitor_put('\n');
     }
 }
 

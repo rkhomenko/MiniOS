@@ -1,16 +1,23 @@
-#include "monitor.h"
-#include "multiboot.h"
-#include "descriptor_tables.h"
-#include "timer.h"
+#include <memory.h>
+#include <monitor.h>
+#include <multiboot.h>
+#include <descriptor_tables.h>
+#include <timer.h>
 
 int kernel_main(struct multiboot *mboot_ptr)
 {
+    uint32_t* ptr = (uint32_t*)0xA0000000;
+    uint32_t do_page_fault = 0;
     // Initialise all the ISRs and segmentation
     init_descriptor_tables();
     // Initialise the screen (by clearing it)
     monitor_clear();
-    // Write out a sample string
+
+    asm volatile("sti");
+    initialise_paging();
     monitor_write("Hello, world!\n");
+
+    do_page_fault = *ptr;
 
     /*asm volatile("int $0x3");
     asm volatile("int $0x4");
