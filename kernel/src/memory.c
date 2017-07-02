@@ -95,7 +95,7 @@ void initialise_paging() {
 
     kernel_dir = (struct page_directory*)
                      kmalloc_a(sizeof(struct page_directory));
-    memset((uint8_t*)kernel_dir, 0, sizeof(struct page_directory));
+    memset(kernel_dir, 0, sizeof(struct page_directory));
     current_dir = kernel_dir;
 
     while (i < placement_address) {
@@ -130,7 +130,7 @@ struct page* get_page(uint32_t address,
     else if (make) {
         dir->tables[table_idx] =
             (struct page_table*)kmalloc_ap(sizeof(struct page_table), &tmp);
-        memset((uint8_t*)dir->tables[table_idx], 0, 0x1000);
+        memset(dir->tables[table_idx], 0, 0x1000);
         dir->tables_phys_addr[table_idx] = tmp | 0x7; // presen, rw, user
         return &dir->tables[table_idx]->pages[address % 1024];
     }

@@ -2,6 +2,7 @@
 #define MINI_OS_MEMORY_H_
 
 #include <stddef.h>
+#include <isr.h>
 
 #define PAGES_COUNT 1024
 #define TABLES_COUNT 1024
