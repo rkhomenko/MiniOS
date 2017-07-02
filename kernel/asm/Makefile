@@ -3,7 +3,7 @@ ASM_BUILD_DIR=$(BUILD_DIR)/asm
 AS=nasm
 ASFLAGS= -felf
 
-SOURCES_ASM=boot.s gdt.s interrupt.s
+SOURCES_ASM=boot.s gdt.s interrupt.s process.s
 OBJECTS_ASM=$(patsubst %.s, $(ASM_BUILD_DIR)/%.o,$(SOURCES_ASM))
 
 all: $(OBJECTS_ASM)

@@ -33,5 +33,6 @@ struct page *get_page(uint32_t address,
                       int make,
                       struct page_directory *pd);
 void page_fault(struct registers regs);
+struct page_directory* clone_directory(struct page_directory* src);
 
 #endif /* MINI_OS_MEMORY_H_ */

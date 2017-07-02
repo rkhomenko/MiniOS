@@ -4,32 +4,28 @@
 
 isr_t interrupt_handlers[256];
 
-void register_interrupt_handler(u8int n, isr_t handler)
+void register_interrupt_handler(uint8_t n, isr_t handler)
 {
     interrupt_handlers[n] = handler;
 }
 
 // This gets called from our ASM interrupt handler stub.
-void isr_handler(registers_t regs)
+void isr_handler(struct registers regs)
 {
-    monitor_write("recieved interrupt: ");
-    monitor_write_dec(regs.int_no);
-    monitor_put('\n');
-
     if (interrupt_handlers[regs.int_no] != 0)
     {
         isr_t handler = interrupt_handlers[regs.int_no];
         handler(regs);
     }
     else {
-        monitor_write("unhandled interrupt: ");
+        /*monitor_write("unhandled interrupt: ");
         monitor_write_hex(regs.int_no);
-        monitor_put('\n');
+        monitor_put('\n');*/
     }
 }
 
 // This gets called from our ASM interrupt handler stub.
-void irq_handler(registers_t regs)
+void irq_handler(struct registers regs)
 {
     // Send an EOI (end of interrupt) signal to the PICs.
     // If this interrupt involved the slave.
@@ -46,5 +42,4 @@ void irq_handler(registers_t regs)
         isr_t handler = interrupt_handlers[regs.int_no];
         handler(regs);
     }
-
 }

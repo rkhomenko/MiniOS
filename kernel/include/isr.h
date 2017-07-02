@@ -1,4 +1,7 @@
-#include "common.h"
+#ifndef MINI_OS_ISR_H_
+#define MINI_OS_ISR_H_
+
+#include <stddef.h>
 
 // A few defines to make life a little easier
 #define IRQ0 32
@@ -18,16 +21,17 @@
 #define IRQ14 46
 #define IRQ15 47
 
-typedef struct registers
-{
-    u32int ds;                  // Data segment selector
-    u32int edi, esi, ebp, esp, ebx, edx, ecx, eax; // Pushed by pusha.
-    u32int int_no, err_code;    // Interrupt number and error code (if applicable)
-    u32int eip, cs, eflags, useresp, ss; // Pushed by the processor automatically.
-} registers_t;
+struct registers {
+    uint32_t ds;                  // Data segment selector
+    uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax; // Pushed by pusha.
+    uint32_t int_no, err_code;    // Interrupt number and error code (if applicable)
+    uint32_t eip, cs, eflags, useresp, ss; // Pushed by the processor automatically.
+};
 
 // Enables registration of callbacks for interrupts or IRQs.
 // For IRQs, to ease confusion, use the #defines above as the
 // first parameter.
-typedef void (*isr_t)(registers_t);
-void register_interrupt_handler(u8int n, isr_t handler);
+typedef void (*isr_t)(struct registers);
+void register_interrupt_handler(uint8_t n, isr_t handler);
+
+#endif /* MINI_OS_ISR_H_ */

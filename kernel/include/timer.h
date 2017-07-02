@@ -1,8 +1,8 @@
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef MINI_OS_TIMER_H_
+#define MINI_OS_TIMER_H_
 
-#include "common.h"
+#include <stddef.h>
 
-void init_timer(u32int frequency);
+void init_timer(uint32_t frequency);
 
-#endif
+#endif /* MINI_OS_TIMER_H_ */

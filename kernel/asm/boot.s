@@ -50,7 +50,8 @@ mboot:
 
 start:
     ; Загрузим multiboot информацию в стек, она будет первым параметром функции kernel_main на Си
-    push    ebx
+    push esp
+    push ebx
 
     ; Запускаем ядро:
     cli                         ; Отключаем прерывания

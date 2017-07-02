@@ -9,9 +9,10 @@
 
 #define INDEX_FROM_BIT(X) ((X) / (8 * 4))
 #define OFFSET_FROM_BIT(X) ((X) % (8 * 4))
+#define IF_SET(X, Y) ((Y) = (X) ? 1 : 0)
 
-static struct page_directory* kernel_dir = NULL;
-static struct page_directory* current_dir = NULL;
+struct page_directory* kernel_dir = NULL;
+struct page_directory* current_dir = NULL;
 
 static uint32_t* frames;
 static uint32_t nframes;
@@ -32,12 +33,14 @@ static void clear_frame(uint32_t frame_addr) {
     frames[idx] &= ~(ONE << off);
 }
 
+/*
 static uint32_t test_frame(uint32_t frame_addr) {
     uint32_t frame = frame_addr / 0x1000;
     uint32_t idx = INDEX_FROM_BIT(frame);
     uint32_t off = OFFSET_FROM_BIT(frame);
     return (frames[idx] & (ONE << off));
 }
+*/
 
 static uint32_t first_frame() {
     uint32_t i = 0;
@@ -165,4 +168,57 @@ void page_fault(struct registers regs) {
     monitor_write_hex(faulting_address);
     monitor_write("\n");
     PANIC("Page fault");
+}
+
+void copy_page_physical(uint32_t, uint32_t);
+
+static struct page_table* clone_table(struct page_table* src,
+                                      uint32_t* phys) {
+    struct page_table* table =
+        (struct page_table *)kmalloc_ap(sizeof(struct page_table), phys);
+    int i = 0;
+
+    memset(table, 0, sizeof(struct page_directory));
+    for (i = 0; i < PAGES_COUNT; i++) {
+        if (src->pages[i].frame) {
+            alloc_frame(&table->pages[i], 0, 0);
+            IF_SET(src->pages[i].present, table->pages[i].present);
+            IF_SET(src->pages[i].rw, table->pages[i].rw);
+            IF_SET(src->pages[i].user, table->pages[i].user);
+            IF_SET(src->pages[i].accessed, table->pages[i].accessed);
+            IF_SET(src->pages[i].dirty, table->pages[i].dirty);
+
+            copy_page_physical(src->pages[i].frame * 0x1000,
+                               table->pages[i].frame * 0x1000);
+        }
+    }
+
+    return table;
+}
+
+struct page_directory* clone_directory(struct page_directory* src) {
+    uint32_t phys = 0;
+    uint32_t offset = 0;
+    struct page_directory* dir = kmalloc_ap(sizeof(struct page_directory), &phys);
+    int i = 0;
+
+    memset(dir, 0, sizeof(struct page_directory));
+    offset = (uint32_t)dir->phys_addr - (uint32_t)dir;
+    dir->phys_addr = phys + offset;
+
+    for (i = 0; i < TABLES_COUNT; i++) {
+        if (!src->tables[i]) {
+            continue;
+        }
+
+        if (kernel_dir->tables[i] == src->tables[i]) {
+            dir->tables[i] = src->tables[i];
+            dir->tables_phys_addr[i] = src->tables_phys_addr[i];
+        }
+        else {
+            dir->tables[i] = clone_table(src->tables[i], &phys);
+            dir->tables_phys_addr[i] = phys | 0x07;
+        }
+    }
+    return dir;
 }

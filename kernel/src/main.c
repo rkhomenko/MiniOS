@@ -5,32 +5,37 @@
 #include <timer.h>
 #include <kmalloc.h>
 #include <string.h>
+#include <process.h>
 
-int kernel_main(struct multiboot *mboot_ptr)
-{
-    uint32_t* ptr = (uint32_t*)0xA0000000;
-    uint32_t do_page_fault = 0;
-    // Initialise all the ISRs and segmentation
-    init_descriptor_tables();
-    // Initialise the screen (by clearing it)
+extern uint32_t placement_address;
+uint32_t initial_esp;
+
+int kernel_main(struct multiboot* mboot_ptr, uint32_t initial_stack) {
+    int ret = 0;
+
+    initial_esp = initial_stack;
+
     monitor_clear();
+    monitor_write("Hello multitasking world!\n");
+
+    init_descriptor_tables();
 
     asm volatile("sti");
+    init_timer(50);
+
     initialise_paging();
-    monitor_write("Hello, world!\n");
+    initialise_procs();
 
-    do_page_fault = *ptr;
-    char* buffer = kmalloc(32);
-    memset(buffer, 'a', 31);
-    buffer[31] = '\0';
-
-    monitor_write(buffer);
-
-    /*asm volatile("int $0x3");
-    asm volatile("int $0x4");
-
-    asm volatile("sti");
-    init_timer(10);*/
+    ret = fork();
+    monitor_write("fork(): pid = ");
+    monitor_write_hex(ret);
+    monitor_write("\n");
+    if (ret == 0) {
+        monitor_write("In child process!\n");
+    }
+    else {
+        monitor_write("In parent process!\n");
+    }
 
     return 0;
 }

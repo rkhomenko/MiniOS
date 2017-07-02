@@ -1,13 +1,12 @@
-#ifndef MONITOR_H
-#define MONITOR_H
+#ifndef MINI_OS_MONITOR_H_
+#define MINI_OS_MONITOR_H_
 
-#include "common.h"
+#include <stddef.h>
 
 void monitor_put(char c);
 void monitor_clear();
 void monitor_write(const char *c);
-void monitor_write_hex(u32int n);
-void monitor_write_dec(u32int n);
+void monitor_write_hex(uint32_t n);
+void monitor_write_dec(uint32_t n);
 
-
-#endif // MONITOR_H
+#endif /* MINI_OS_MONITOR_H_ */
