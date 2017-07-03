@@ -13,6 +13,7 @@ function log_string {
 function create_or_update_image {
     IMAGE="$1"
     ELF="$2"
+    MODULE="$3"
     GRUB_CFG=./grub/grub.cfg
     GRUB_IMG=./grub/background.jpg
     CREATE_IMAGE=false
@@ -40,6 +41,8 @@ function create_or_update_image {
     sudo mount -t ext2 $LOOP_PART "$TMP_DIR"
 
     if $CREATE_IMAGE ; then
+        sudo mkdir -p "$TMP_DIR/boot/mods"
+        sudo mkdir -p "$TMP_DIR/boot/kernel"
         sudo mkdir -p "$TMP_DIR/boot/grub"
         sudo cp "$GRUB_CFG" "$TMP_DIR/boot/grub"
         sudo cp "$GRUB_IMG" "$TMP_DIR/boot/grub"
@@ -47,7 +50,8 @@ function create_or_update_image {
                           --modules="part_msdos ext2 elf" $LOOP
     fi
 
-    sudo cp "$ELF" "$TMP_DIR/boot"
+    sudo cp "$ELF" "$TMP_DIR/boot/kernel"
+    sudo cp "$MODULE" "$TMP_DIR/boot/mods"
 
     sudo umount "$TMP_DIR"
     rm -rf "$TMP_DIR"
@@ -55,15 +59,16 @@ function create_or_update_image {
     sudo losetup -d $LOOP
 }
 
-if ! [[ $# -eq 4 ]]; then
+if ! [[ $# -eq 6 ]]; then
     log_error "Bad arguments!"
     log_string \
-        "Usage: $SCRIPT_NAME -i /path/to/image -e /path/to/elf]"
+        "Usage: $SCRIPT_NAME -i /path/to/image -e /path/to/elf] -m /path/to/module"
     exit 1
 fi
 
 IMAGE=
 ELF=
+MODULE=
 
 while [[ $# -gt 1 ]]
 do
@@ -75,6 +80,10 @@ do
             ;;
         -e)
             ELF="$2"
+            shift
+            ;;
+        -m)
+            MODULE="$2"
             shift
             ;;
         *)
@@ -95,4 +104,9 @@ if ! [[ -d `dirname "$IMAGE"` ]]; then
     exit 4
 fi
 
-create_or_update_image "$IMAGE" "$ELF"
+if ! [[ -f "$MODULE" ]]; then
+    log_error "Module file does not exist!"
+    exit 5
+fi
+
+create_or_update_image "$IMAGE" "$ELF" "$MODULE"

@@ -18,6 +18,7 @@ dirs:
 objects: dirs
 	make BUILD_DIR=$(BUILD_DIR) --directory=asm
 	make BUILD_DIR=$(BUILD_DIR) INCLUDE_DIR=$(INCLUDE_DIR) --directory=src
+	make BUILD_DIR=$(BUILD_DIR) INCLUDE_DIR=$(INCLUDE_DIR) --directory=module
 
 link: objects
 	@ld $(LDFLAGS) -o $(BINARY) \
@@ -30,4 +31,6 @@ clean:
 	make BUILD_DIR=$(BUILD_DIR) --directory=asm clean
 	make BUILD_DIR=$(BUILD_DIR) INCLUDE_DIR=$(INCLUDE_DIR) \
 		--directory=src clean
+	make BUILD_DIR=$(BUILD_DIR) INCLUDE_DIR=$(INCLUDE_DIR) \
+		--directory=module clean
 	@rm -f $(BINARY) $(BINARY_DBG)

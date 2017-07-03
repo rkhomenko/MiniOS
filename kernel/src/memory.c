@@ -222,3 +222,7 @@ struct page_directory* clone_directory(struct page_directory* src) {
     }
     return dir;
 }
+
+void set_placement_addr(uint32_t addr) {
+    placement_address = addr;
+}

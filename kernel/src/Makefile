@@ -5,7 +5,7 @@ CFLAGS=-c -Wall -Wextra -pedantic-errors -fno-builtin -fno-stack-protector \
 
 SOURCES_C=common.c descriptor_tables.c isr.c main.c \
 			monitor.c timer.c memory.c kmalloc.c string.c \
-			process.c
+			process.c func_table.c
 OBJECTS_C=$(patsubst %.c, $(SOURCES_BUILD_DIR)/%.o,$(SOURCES_C))
 
 all: $(OBJECTS_C)

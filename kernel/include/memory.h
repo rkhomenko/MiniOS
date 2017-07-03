@@ -34,5 +34,6 @@ struct page *get_page(uint32_t address,
                       struct page_directory *pd);
 void page_fault(struct registers regs);
 struct page_directory* clone_directory(struct page_directory* src);
+void set_placement_addr(uint32_t addr);
 
 #endif /* MINI_OS_MEMORY_H_ */

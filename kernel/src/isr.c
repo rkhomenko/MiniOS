@@ -18,9 +18,9 @@ void isr_handler(struct registers regs)
         handler(regs);
     }
     else {
-        /*monitor_write("unhandled interrupt: ");
+        monitor_write("unhandled interrupt: ");
         monitor_write_hex(regs.int_no);
-        monitor_put('\n');*/
+        monitor_put('\n');
     }
 }
 
