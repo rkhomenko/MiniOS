@@ -54,8 +54,7 @@ menuentry "MiniOS" {
 ```
 Адрес загруженного модуля предается в процедуру kernel_main
 через указатель на структуру multiboot
-[см. документацию multiboot]
-(https://www.gnu.org/software/grub/manual/multiboot/multiboot.html).
+[см. документацию multiboot](https://www.gnu.org/software/grub/manual/multiboot/multiboot.html).
 
 ## Вызов процедур ядра из модуля
 В процедуру module_main будем передавать указатель на структуру,
