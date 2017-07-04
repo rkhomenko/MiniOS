@@ -2,14 +2,14 @@
 #include <timer.h>
 #include <isr.h>
 #include <monitor.h>
-#include <process.h>
 
 uint32_t tick = 0;
+proc_switch_ptr proc_switch_timer = NULL;
 
 static void timer_callback(struct registers regs)
 {
     tick++;
-    proc_switch();
+    if (proc_switch_timer) proc_switch_timer();
     /*monitor_write("Tick: ");
     monitor_write_dec(tick);
     monitor_write("\n");*/
@@ -35,4 +35,8 @@ void init_timer(uint32_t frequency)
     // Send the frequency divisor.
     outb(0x40, l);
     outb(0x40, h);
+}
+
+void init_switch_proc(proc_switch_ptr switch_func){
+    proc_switch_timer = switch_func;
 }
