@@ -2,17 +2,39 @@
 #include <timer.h>
 #include <isr.h>
 #include <monitor.h>
+#include <module.h>
 
-uint32_t tick = 0;
-proc_switch_ptr proc_switch_timer = NULL;
+
+extern process_dispatcher_ptr process_dispatcher;
+extern get_current_process_ptr get_current_process;
 
 static void timer_callback(struct registers regs)
 {
-    tick++;
-    if (proc_switch_timer) proc_switch_timer();
-    /*monitor_write("Tick: ");
-    monitor_write_dec(tick);
-    monitor_write("\n");*/
+    struct process* proc = get_current_process();
+    struct process* next_proc = NULL;
+
+    process_dispatcher();
+
+    next_proc = get_current_process();
+
+    if (proc != NULL) {
+        if (proc->state == PROCESS_STOPED) {
+            monitor_write("Process terminated: id ");
+            monitor_write_hex(proc->id + 1);
+            monitor_put('\n');
+        }
+        if (proc->state == PROCESS_PAUSED) {
+            monitor_write("Process paused: id ");
+            monitor_write_hex(proc->id + 1);
+            monitor_put('\n');
+        }
+    }
+
+    if (next_proc != NULL) {
+        monitor_write("Process continued: id ");
+        monitor_write_hex(proc->id + 1);
+        monitor_put('\n');
+    }
 }
 
 void init_timer(uint32_t frequency)
@@ -35,8 +57,4 @@ void init_timer(uint32_t frequency)
     // Send the frequency divisor.
     outb(0x40, l);
     outb(0x40, h);
-}
-
-void init_switch_proc(proc_switch_ptr switch_func){
-    proc_switch_timer = switch_func;
 }
