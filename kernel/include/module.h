@@ -10,18 +10,23 @@ struct func_table {
     void* func_ptrs[FUNC_MAX];
 };
 
-enum module_funcs {
-    ADD,
-    SUB,
-    MUL,
-    DIV
+#define PROC_MAX 1024
+
+struct process {
+    uint32_t id;
+    size_t work_count;
 };
 
-typedef int32_t (*add_ptr)(int32_t, int32_t);
-typedef int32_t (*sub_ptr)(int32_t, int32_t);
-typedef int32_t (*mul_ptr)(int32_t, int32_t);
-typedef int32_t (*div_ptr)(int32_t, int32_t);
+enum module_funcs {
+    CREATE_PROCESS,
+    DELETE_PROCESS,
+    PROCESS_DISPATCHER
+};
 
-typedef void (*module_main_ptr)(struct func_table* func_table);
+typedef struct process* (*create_proc_ptr)(size_t work_count);
+typedef void (*delete_proc_ptr)(struct process* proc);
+typedef void (*process_dispatcher_ptr)(void);
+
+typedef void (*module_main_ptr)(struct func_table* out, struct func_table* in);
 
 #endif /* MINI_OS_MODULE_H_ */

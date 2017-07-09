@@ -6,14 +6,14 @@
 static m_t* ptr;
 static struct func_table ft;
 
-void init_func_table(void) {
+void init_module(struct func_table* func_table) {
     module_main_ptr module_main = NULL;
     void* p = (void*)get_module();
     int i = 0;
 
     SET_MODULE_MAIN(module_main, p, ptr);
 
-    module_main(&ft);
+    module_main(&ft, func_table);
 
     for (i = 0; i < FUNC_MAX; i++) {
         ft.func_ptrs[i] = (void*)((uint32_t)ft.func_ptrs[i] +
