@@ -4,8 +4,7 @@ CFLAGS=-c -Wall -Wextra -pedantic-errors -fno-builtin -fno-stack-protector \
 		-nostdinc -nostdlib -ggdb3 -m32 -I$(INCLUDE_DIR)
 
 SOURCES_C=common.c descriptor_tables.c isr.c main.c \
-			monitor.c timer.c memory.c kmalloc.c string.c \
-			process.c func_table.c
+			monitor.c timer.c string.c load_disk.c load_module.c
 OBJECTS_C=$(patsubst %.c, $(SOURCES_BUILD_DIR)/%.o,$(SOURCES_C))
 
 all: $(OBJECTS_C)

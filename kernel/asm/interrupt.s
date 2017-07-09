@@ -29,7 +29,7 @@
     push byte %2
     jmp irq_common_stub
 %endmacro
-        
+
 ISR_NOERRCODE 0
 ISR_NOERRCODE 1
 ISR_NOERRCODE 2
@@ -140,3 +140,7 @@ irq_common_stub:
     add esp, 8     ; Cleans up the pushed error code and pushed ISR number
     sti
     iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
+
+[GLOBAL load_disk]
+load_disk:
+    ret

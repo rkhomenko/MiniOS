@@ -42,4 +42,9 @@ struct multiboot {
     uint32_t vbe_interface_len;
 }  __attribute__((packed));
 
+typedef struct multiboot m_t;
+
+#define SET_MODULE_MAIN(func_ptr, p, ptr) \
+    ((func_ptr) = (module_main_ptr)(*((uint32_t*)(ptr)->mods_addr) + 0x1000), (p) = (p));
+
 #endif /* MINI_OS_MULTIBOOT_H_ */
