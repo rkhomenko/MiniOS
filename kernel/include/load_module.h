@@ -1,11 +1,11 @@
 #ifndef MINI_OS_LOAD_MODULE_H_
 #define MINI_OS_LOAD_MODULE_H_
 
+#include <multiboot.h>
 #include <module.h>
 
-void init_module(struct func_table* ft);
+void init_module(struct multiboot* mboot, struct func_table* ft);
 void* get_func(int);
-void set_ptr(void* p);
 
 #define SET_FUNC_PTR(P, A) \
     (*(void**)&(P) = (A))

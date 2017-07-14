@@ -26,14 +26,13 @@ int kernel_main(struct multiboot* mboot_ptr) {
 
     monitor_write_ptr mw;
 
-    set_ptr(mboot_ptr);
     init_descriptor_tables();
 
     monitor_clear();
     monitor_write("Hello modules world!\n");
 
     init_out_func_table(&ft);
-    init_module(&ft);
+    init_module(mboot_ptr, &ft);
 
     SET_FUNC_PTR(create_proc, get_func(CREATE_PROCESS));
     SET_FUNC_PTR(delete_proc, get_func(DELETE_PROCESS));

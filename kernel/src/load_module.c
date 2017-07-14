@@ -1,17 +1,14 @@
 #include <stddef.h>
 #include <module.h>
-#include <load_disk.h>
 #include <monitor.h>
 
-static m_t* ptr;
 static struct func_table ft;
 
-void init_module(struct func_table* func_table) {
+void init_module(struct multiboot* mboot, struct func_table* func_table) {
     module_main_ptr module_main = NULL;
-    void* p = (void*)get_module();
     int i = 0;
 
-    SET_MODULE_MAIN(module_main, p, ptr);
+    module_main = (module_main_ptr)(*((uint32_t*)(mboot)->mods_addr) + 0x1000);
 
     module_main(&ft, func_table);
 
@@ -23,8 +20,4 @@ void init_module(struct func_table* func_table) {
 
 void* get_func(int n) {
     return ft.func_ptrs[n];
-}
-
-void set_ptr(void* p) {
-    ptr = (m_t*)p;
 }
